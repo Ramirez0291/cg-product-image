@@ -1,60 +1,55 @@
 # cg-product-image
 
-**商品写真の表面素材の質感を、画像生成AIで実物どおりに引き出すためのプロンプトを作るスキル。**
+[中文](README.zh.md) | [English](README.en.md) | [日本語](README.ja.md)
 
-既存の商品写真（元画像）と、撮影環境・背景・素材・その他の指示から、Nano Banana や GPT Image などに貼り付ける英語プロンプトを組み立てます。形・色・ロゴは変えず、照明と表面の描き方だけを変えます。
+**为图像生成 AI 编写提示词，按实物原样呈现商品照片的表面材质质感。**
+**Writes image-generation prompts that bring out the true surface material of a product photo.**
 
-- **質感を引き出す。変えない。** マットはマットのまま、樹脂は樹脂のまま、素材本来の見え方をはっきりさせます。
-- **実物どおり。** すべてのプロンプトに FIDELITY LOCK（形・部品数・色・ロゴを守る指示）を入れます。
-- **直し方まで出す。** 生成後に見るところと、うまくいかないときに足す1行を添えます。
+根据原图和你指定的拍摄环境、背景、材质、其他要求，生成可粘贴到 Nano Banana、GPT Image 等工具的英文提示词。不改变形状、颜色和 Logo，只改变打光和表面呈现。
 
-## 使い方
+From a reference photo plus your shooting environment, background, material, and other instructions, it builds an English prompt for Nano Banana, GPT Image, and similar tools. Shape, color, and logos stay the same; only lighting and surface rendering change.
 
-このフォルダをエージェントの skills ディレクトリに置き、セッションを再起動します（Claude Code：`~/.claude/skills/cg-product-image`）。
+## 语言 / Languages
 
-> cg-product-image で、この画像の質感を上げるプロンプトを作って。スタジオ、白背景、本体はマットブラック塗装でボルトはメッキ。
+支持中文、日语、英语提问；说明使用你的语言，提示词始终为英文。
+Ask in Chinese, Japanese, or English. Explanations follow your language; the prompt is always English.
 
-できたプロンプトは、元画像と一緒に画像生成AIへ渡します。
+## 使用方法 / Usage
 
-## 入力
+把本文件夹放入 skills 目录并重启会话（Claude Code：`~/.claude/skills/cg-product-image`）。
+Put this folder in your skills directory and restart the session.
 
-| 項目 | 内容 |
+> 用 cg-product-image 帮我写提升这张图质感的提示词。摄影棚，白底，主体是哑光黑漆，螺丝是电镀。
+>
+> Use cg-product-image to improve the material look of this photo. Studio, white background, matte black paint body, chrome bolts.
+
+## 输入 / Inputs
+
+| 项目 / Item | 内容 / Options |
 |---|---|
-| 元画像 | 加工する商品写真 |
-| 撮影環境 | 商品撮影スタジオ |
-| 背景 | 白（Amazon メイン画像）／グレー（サブ画像） |
-| 素材 | マット塗装、光沢塗装、メタリック・パール、メッキ、アルマイト、金属素地、カーボン、樹脂・ゴム、布・レザー |
-| 他の指示 | 比率、商品の大きさ、修復の要否など（任意） |
+| 原图 / Reference image | 要加工的商品照片 / The product photo to edit |
+| 拍摄环境 / Shooting environment | 商品摄影棚 / Product photo studio |
+| 背景 / Background | 白底（Amazon 主图）、灰底（副图）/ White (main image), Gray (secondary) |
+| 材质 / Material | 哑光漆、亮光漆、金属漆、电镀、阳极氧化、金属原色、碳纤维、塑料、橡胶、面料、皮革 / Matte, gloss, metallic, chrome, anodized, bare metal, carbon, plastic, rubber, fabric, leather |
+| 其他要求 / Other | 比例、商品大小、修复等（可选）/ Aspect ratio, size, restoration (optional) |
 
-## 出力
+## 输出 / Output
 
-- 入力の確認表（こちらで推定・仮定したことも明記）
-- 英語プロンプト
-- 生成後に見るところと、修正用の1行
+- 输入确认表 / Input summary
+- 英文提示词 / English prompt
+- 生成后检查与修正用的一行 / Post-generation checklist with one-line fixes
 
-## 構成
+## 详细说明 / Details
 
-```text
-SKILL.md                        手順、入力、素材の対応表、出力形式
-references/
-  prompt_template.md            組み立ての順番、固定ブロック、記入例
-  restoration.md                修復ブロック
-  troubleshooting.md            生成後のチェックと修正用の1行
-  env/product_photo_studio.md   背景・影・カメラ・照明・出力・NG
-  surface/                      素材モジュール（9種）
-agents/openai.yaml              Codex 表示用メタデータ
-```
+- 中文：[README.zh.md](README.zh.md)
+- English: [README.en.md](README.en.md)
+- 日本語：[README.ja.md](README.ja.md)
 
-## モジュールを足すとき
+## 注意 / Caution
 
-- **素材**：`references/surface/` に1ファイル追加します。英文は「定義文 → HIGHLIGHT BEHAVIOR → FORM DEFINITION → MICRO-TEXTURE → FINISH QUALITY」の順で書き、SKILL.md の素材の対応表に1行足します。
-- **撮影環境**：`references/env/` に1ファイル追加します。`product_photo_studio.md` と同じく、背景ごとの BACKGROUND・SHADOW・OUTPUT・NEGATIVE と、CAMERA・LIGHTING を書きます。
-- 実際の生成で確認するまでは、ファイルの先頭に「状態：草案」と書いておきます。確認できたら消します。
+请务必将生成图与原图对比，形状、Logo、颜色变化的图片不要用于商品页面。
+Always compare the result with the reference. Don't use an image whose shape, logo, or color changed on a product page.
 
-## 注意
+## 许可证 / License
 
-生成画像は必ず元画像と見比べてください。形・ロゴ・色が変わった画像を商品ページに使うと、実物と違う表示になります。
-
-## ライセンス
-
-GNU AGPL-3.0（全文：[LICENSE](LICENSE)）。作者：Rami0291
+GNU AGPL-3.0（[LICENSE](LICENSE)）. Author: Rami0291

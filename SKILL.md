@@ -1,14 +1,15 @@
 ---
 name: cg-product-image
 license: "AGPL-3.0"
-description: 既存の商品写真を画像生成AI（Nano Banana、GPT Image など）で加工し、表面素材の質感（マット塗装、光沢塗装、メタリック、メッキ、アルマイト、金属素地、カーボン、樹脂・ゴム、布・レザー）を実物どおりに引き出すための英語プロンプトを作る。ユーザーが指定する撮影環境・背景・素材・その他の指示から、形・色・ロゴを変えない加工プロンプトを組み立て、生成後のチェック項目と修正用の1行も出す。「商品画像の質感を上げて」「素材感を出して」「白背景のメイン画像に加工して」「商品写真を修復して」「マットの質感」「メッキをきれいに」「Nano Banana 用の加工プロンプト」など、既存の商品写真を画像生成AIで仕上げたいときは、素材名が出なくても使う。元画像なしの新規生成、文字入りの宣伝画像、動画には使わない。
+description: 既存の商品写真を画像生成AI（Nano Banana、GPT Image など）で加工し、表面素材の質感（マット塗装、光沢塗装、メタリック、メッキ、アルマイト、金属素地、カーボン、樹脂・ゴム、布・レザー）を実物どおりに引き出すための英語プロンプトを作る。ユーザーが指定する撮影環境・背景・素材・その他の指示から、形・色・ロゴを変えない加工プロンプトを組み立て、生成後のチェック項目と修正用の1行も出す。「商品画像の質感を上げて」「素材感を出して」「白背景のメイン画像に加工して」「商品写真を修復して」「マットの質感」「メッキをきれいに」「Nano Banana 用の加工プロンプト」など、既存の商品写真を画像生成AIで仕上げたいときは、素材名が出なくても使う。中国語・英語の依頼にも使う（例：「提升商品图的质感」「做白底主图」「哑光/电镀质感」「修复商品照片」「enhance product photo material」「make the chrome look better」「white background main image prompt」）。元画像なしの新規生成、文字入りの宣伝画像、動画には使わない。Works in Japanese, Chinese, and English.
 ---
 
 # cg-product-image
 
 既存の商品写真（以下「元画像」）を画像生成AIで加工し、表面素材の質感を実物どおりに、よりはっきり見せるためのプロンプトを作る。
 
-- プロンプトは英語で書く（画像生成AI向け）。ユーザーへの説明は日本語で書く。
+- プロンプトは、どの言語の依頼でも英語で書く（画像生成AI向け）。
+- ユーザーへの質問・説明・確認表・チェック項目は、ユーザーの言語（日本語・中国語・英語）で書く。判断できなければ日本語。references の日本語の説明や症状名、確認表の中身もすべてユーザーの言語に訳す。英語のままにするのは、プロンプト、→ の1行、部位名（プロンプトと一致させるため）だけ。
 - 成果物はプロンプト。ユーザーが元画像を添付し、プロンプトを貼り付けて生成する。このセッションで画像生成ツールが使える場合は、ユーザーに確認してから実行してよい。
 - 元画像なしで商品画像を新しく作る依頼は対象外。実物と違う画像になるため。
 
@@ -35,7 +36,7 @@ description: 既存の商品写真を画像生成AI（Nano Banana、GPT Image �
 | 他の指示 | 比率、商品の大きさ、修復の要否など | なしで進める |
 
 - 足りない項目は、まとめて1回だけ聞く。選択肢を示し、推奨を先頭に置く。
-- 素材は、対応表の「ユーザーの言い方」のどれかに当てはまれば指定済みとみなす（例：キャンディ塗装、アルマイト）。「マットブラック」「黒いツヤあり」のように色とツヤだけで材質が分からないときは、材質を聞く（例：マット塗装、シボ樹脂、ブラックアルマイト）。
+- 素材は、対応表の「ユーザーの言い方」または「中文 / English」のどれかに当てはまれば指定済みとみなす（例：キャンディ塗装、阳极氧化、chrome plating）。「マットブラック」「黒いツヤあり」のように色とツヤだけで材質が分からないときは、材質を聞く（例：マット塗装、シボ樹脂、ブラックアルマイト）。
 - 元画像が見られず、ほかに聞くことがあるときは、ほかの素材の部位があるかも同じ質問で聞く。これだけのために質問はしない。ユーザーが挙げていない部位は FIDELITY LOCK に任せ、推定・仮定に書く。
 - 対応表にない素材・撮影環境を指定されたら、既存モジュールと同じ構成で新しいブロックを書き、出力で「草案」と伝える。
 
@@ -43,36 +44,36 @@ description: 既存の商品写真を画像生成AI（Nano Banana、GPT Image �
 
 モジュールはすべて `references/surface/` にある。照明は `references/env/product_photo_studio.md` の LIGHTING から選ぶ。
 
-| ユーザーの言い方 | モジュール | バリエーション | 照明 |
-|---|---|---|---|
-| マット塗装、つや消し、粉体塗装 | matte.md | — | MATTE |
-| マット塗装（粒のない、なめらかな肌） | matte.md | SMOOTH | MATTE |
-| 半ツヤ、サテン、3〜5分ツヤ | matte.md | SEMI-GLOSS | DEFAULT |
-| マットメタリック | matte.md | MATTE METALLIC | MATTE |
-| ラバー塗装、ソフトタッチ | matte.md | SOFT-TOUCH | MATTE |
-| マットブラック、つや消し黒 | matte.md | MATTE BLACK | MATTE |
-| 光沢塗装、ツヤあり、ソリッド塗装 | high_gloss.md | — | REFLECTIVE |
-| グロスブラック、ツヤ黒 | high_gloss.md | GLOSS BLACK | REFLECTIVE |
-| キャンディ塗装 | high_gloss.md | CANDY | REFLECTIVE |
-| メタリック塗装 | high_gloss_metallic.md | — | REFLECTIVE |
-| パール塗装 | high_gloss_metallic.md | PEARL | REFLECTIVE |
-| メッキ、クロームメッキ | chrome.md | — | REFLECTIVE |
-| ブラックメッキ、スモークメッキ | chrome.md | BLACK CHROME | REFLECTIVE |
-| アルマイト | anodized.md | — | DEFAULT |
-| 光沢アルマイト | anodized.md | GLOSS ANODIZE | REFLECTIVE |
-| ブラックアルマイト | anodized.md | BLACK ANODIZE | DEFAULT |
-| ヘアライン | bare_metal.md | BRUSHED | REFLECTIVE |
-| 削り出し（無塗装） | bare_metal.md | MACHINED | DEFAULT |
-| バフ研磨、鏡面仕上げ | bare_metal.md | POLISHED | REFLECTIVE |
-| ブラスト、梨地 | bare_metal.md | BEAD-BLASTED | MATTE |
-| カーボン（ツヤあり） | carbon.md | — | REFLECTIVE |
-| マットカーボン | carbon.md | MATTE CARBON | MATTE |
-| カーボン調（印刷・水圧転写・シート） | carbon.md | CARBON-LOOK | ツヤあり＝REFLECTIVE、マット＝MATTE |
-| 樹脂（シボ・つや消し） | plastic_rubber.md | TEXTURED PLASTIC | MATTE |
-| 樹脂（光沢） | plastic_rubber.md | GLOSSY PLASTIC | REFLECTIVE |
-| ゴム、エラストマー | plastic_rubber.md | RUBBER | MATTE |
-| ナイロン・ポリエステル生地 | textile_leather.md | FABRIC | MATTE |
-| 本革、合皮 | textile_leather.md | LEATHER | DEFAULT |
+| ユーザーの言い方（日本語） | 中文 / English | モジュール | バリエーション | 照明 |
+|---|---|---|---|---|
+| マット塗装、つや消し、粉体塗装 | 哑光漆、消光、粉末喷涂 / matte paint, powder coat | matte.md | — | MATTE |
+| マット塗装（粒のない、なめらかな肌） | 细腻无颗粒哑光漆 / smooth matte paint | matte.md | SMOOTH | MATTE |
+| 半ツヤ、サテン、3〜5分ツヤ | 半哑光、缎面 / satin, semi-gloss | matte.md | SEMI-GLOSS | DEFAULT |
+| マットメタリック | 哑光金属漆 / matte metallic | matte.md | MATTE METALLIC | MATTE |
+| ラバー塗装、ソフトタッチ | 橡胶漆、肤感漆 / soft-touch, rubberized | matte.md | SOFT-TOUCH | MATTE |
+| マットブラック、つや消し黒 | 哑光黑 / matte black | matte.md | MATTE BLACK | MATTE |
+| 光沢塗装、ツヤあり、ソリッド塗装 | 亮光漆、高光烤漆 / high-gloss paint | high_gloss.md | — | REFLECTIVE |
+| グロスブラック、ツヤ黒 | 亮黑、钢琴黑 / gloss black, piano black | high_gloss.md | GLOSS BLACK | REFLECTIVE |
+| キャンディ塗装 | 糖果漆 / candy paint | high_gloss.md | CANDY | REFLECTIVE |
+| メタリック塗装 | 金属漆 / metallic paint | high_gloss_metallic.md | — | REFLECTIVE |
+| パール塗装 | 珠光漆 / pearl paint | high_gloss_metallic.md | PEARL | REFLECTIVE |
+| メッキ、クロームメッキ | 电镀、镀铬 / chrome plating | chrome.md | — | REFLECTIVE |
+| ブラックメッキ、スモークメッキ | 黑铬、烟熏电镀 / black chrome, smoked chrome | chrome.md | BLACK CHROME | REFLECTIVE |
+| アルマイト | 阳极氧化 / anodized | anodized.md | — | DEFAULT |
+| 光沢アルマイト | 亮面阳极氧化 / gloss anodized | anodized.md | GLOSS ANODIZE | REFLECTIVE |
+| ブラックアルマイト | 黑色阳极氧化 / black anodized | anodized.md | BLACK ANODIZE | DEFAULT |
+| ヘアライン | 拉丝 / brushed, hairline | bare_metal.md | BRUSHED | REFLECTIVE |
+| 削り出し（無塗装） | CNC 切削原色 / machined, raw | bare_metal.md | MACHINED | DEFAULT |
+| バフ研磨、鏡面仕上げ | 抛光、镜面 / polished, mirror-polished | bare_metal.md | POLISHED | REFLECTIVE |
+| ブラスト、梨地 | 喷砂 / bead-blasted | bare_metal.md | BEAD-BLASTED | MATTE |
+| カーボン（ツヤあり） | 亮面碳纤维 / gloss carbon fiber | carbon.md | — | REFLECTIVE |
+| マットカーボン | 哑光碳纤维 / matte carbon fiber | carbon.md | MATTE CARBON | MATTE |
+| カーボン調（印刷・水圧転写・シート） | 仿碳纹（印刷、水转印、贴膜）/ carbon-look print, hydro-dip, film | carbon.md | CARBON-LOOK | ツヤあり＝REFLECTIVE、マット＝MATTE |
+| 樹脂（シボ・つや消し） | 皮纹塑料、磨砂塑料 / textured plastic | plastic_rubber.md | TEXTURED PLASTIC | MATTE |
+| 樹脂（光沢） | 亮面塑料 / glossy plastic | plastic_rubber.md | GLOSSY PLASTIC | REFLECTIVE |
+| ゴム、エラストマー | 橡胶、TPE / rubber, elastomer | plastic_rubber.md | RUBBER | MATTE |
+| ナイロン・ポリエステル生地 | 尼龙、涤纶面料 / nylon, polyester fabric | textile_leather.md | FABRIC | MATTE |
+| 本革、合皮 | 真皮、PU 皮 / genuine leather, synthetic leather | textile_leather.md | LEATHER | DEFAULT |
 
 バリエーションの使い方は、各モジュールの見出しに書いてある：
 - **追加**：基本ブロックの末尾に足す。
@@ -199,6 +200,15 @@ description: 既存の商品写真を画像生成AI（Nano Banana、GPT Image �
 
 - 「推定・仮定」には、ユーザーが指定せず、こちらで推定して決めたこと（色、主素材、部位名、修復の有無など）を「、」で区切って書く。スキルの既定値（カメラ角度を保つ、比率 1:1 など）は書かない。なければ「なし」。
 - 元画像が見られないときは、崩れやすい要素の項目に「（あれば）」を付ける。
+- 上の形式は日本語の例。中国語・英語のユーザーには、見出し・表・説明をその言語で書く。プロンプトと → の1行は英語のまま。見出しは次を使う。
+
+  | 日本語 | 中文 | English |
+  |---|---|---|
+  | 入力の確認 | 输入确认 | Input summary |
+  | 撮影環境／背景／素材／照明／修復／他の指示／推定・仮定 | 拍摄环境／背景／材质／灯光／修复／其他要求／推定与假设 | Shooting environment / Background / Material / Lighting / Restoration / Other instructions / Assumptions |
+  | 注意 | 注意 | Notes |
+  | プロンプト | 提示词 | Prompt |
+  | 生成後に見るところ | 生成后检查 | After generation, check |
 
 ### 6. 生成結果を直す
 
